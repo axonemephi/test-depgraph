@@ -47,7 +47,7 @@ class ModuleNode:
             return NotImplemented
         return self.name == other.name
     
-    # def __hash__(self):
-    #     """The hash is based on the unique module name."""
-    #     return hash(self.name)
+    def __hash__(self):
+        """The hash is based on the unique module name."""
+        return hash(self.name)
         
