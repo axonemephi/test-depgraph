@@ -53,7 +53,8 @@ class DepGraphCLI:
             output_format=parsed_args.format,
             exclude_patterns=parsed_args.exclude,
             show_third_party=not parsed_args.no_third_party,
-            show_stdlib=not parsed_args.no_stdlib
+            show_stdlib=not parsed_args.no_stdlib,
+            include_all=parsed_args.include_all
         )
         
         # Validate project path
@@ -133,8 +134,9 @@ class DepGraphCLI:
 Examples:
   %(prog)s /path/to/project
   %(prog)s /path/to/project -o output.png
-  %(prog)s /path/to/project --format svg --exclude venv --exclude tests
+  %(prog)s /path/to/project --format svg --exclude tests
   %(prog)s /path/to/project --no-third-party --no-stdlib
+  %(prog)s /path/to/project --include-all  # Include venv, __pycache__, etc.
             """
         )
         
@@ -174,6 +176,12 @@ Examples:
             '--no-stdlib',
             action='store_true',
             help='Exclude standard library modules from the graph'
+        )
+        
+        parser.add_argument(
+            '--include-all',
+            action='store_true',
+            help='Include files normally excluded by default (venv, __pycache__, etc.)'
         )
         
         return parser
