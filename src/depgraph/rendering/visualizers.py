@@ -36,19 +36,31 @@ class GraphvizVisualizer(IGraphVisualizer):
             graph: The DependencyGraph to visualize.
             config: Configuration including output path and format.
         """
+        # Choose format; fallback to SVG for large graphs to improve readability
+        node_count = len(graph.nodes)
+        chosen_format = config.output_format
+        if chosen_format == 'png' and node_count > 100:
+            chosen_format = 'svg'
+        
         # Create a new directed graph
         dot = self.graphviz.Digraph(
             comment='Dependency Graph',
-            format=config.output_format,
+            format=chosen_format,
+            engine='dot',
             graph_attr={
-                'rankdir': 'TB',  # Top to Bottom
+                'rankdir': 'LR',  # Left to Right improves readability
                 'bgcolor': 'white',
                 'dpi': '300',
-                'splines': 'ortho',  # Orthogonal edge routing
-                'nodesep': '0.5',
-                'ranksep': '0.8'
+                'splines': 'polyline',
+                'concentrate': 'true',
+                'nodesep': '0.45',
+                'ranksep': '1.1',
+                'fontname': 'Helvetica',
+                'pad': '0.4'
             }
         )
+        # Standardize edge appearance
+        dot.attr('edge', arrowhead='normal', arrowsize='0.8')
         
         # Detect circular dependencies
         cycles = graph.find_cycles()
@@ -64,10 +76,19 @@ class GraphvizVisualizer(IGraphVisualizer):
                 target = cycle[(i + 1) % len(cycle)].name
                 edges_in_cycles.add((source, target))
         
-        # Add nodes with styling based on type and cycle status
+        # Group nodes by top-level package for clustering
+        groups: Dict[str, list] = {}
         for node in graph.nodes.values():
-            is_in_cycle = node.name in nodes_in_cycles
-            self._add_node(dot, node, is_in_cycle)
+            top = node.name.split('.')[0] if '.' in node.name else node.name
+            groups.setdefault(top, []).append(node)
+        
+        # Add nodes inside clusters
+        for group_name, nodes in sorted(groups.items(), key=lambda kv: kv[0]):
+            with dot.subgraph(name=f'cluster_{self._escape_node_name(group_name)}') as sub:
+                sub.attr(label=group_name, style='rounded', color='#D0D0D0', fontname='Helvetica', fontsize='12')
+                for node in nodes:
+                    is_in_cycle = node.name in nodes_in_cycles
+                    self._add_node(sub, node, is_in_cycle)
         
         # Add edges
         for node in graph.nodes.values():
@@ -77,15 +98,21 @@ class GraphvizVisualizer(IGraphVisualizer):
                     edge_in_cycle = (node.name, dependency.name) in edges_in_cycles
                     self._add_edge(dot, node.name, dependency.name, edge_in_cycle)
         
-        # Add title
-        self._add_title(dot, len(graph.nodes))
+        # Add title and legend
+        self._add_title(dot, node_count)
+        self._add_legend(dot)
         
         # Render to file
         output_path = Path(config.output_file)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         
+        # Adjust output file extension if we switched format
+        final_output_path = output_path
+        if output_path.suffix.lower().lstrip('.') != chosen_format:
+            final_output_path = output_path.with_suffix(f'.{chosen_format}')
+        
         # graphviz expects path without extension
-        base_path = output_path.with_suffix('')
+        base_path = final_output_path.with_suffix('')
         dot.render(base_path, cleanup=True)
     
     def _add_node(self, dot, node, is_in_cycle=False):
@@ -102,35 +129,35 @@ class GraphvizVisualizer(IGraphVisualizer):
         # Highlight circular dependencies with red background
         if is_in_cycle:
             style = {
-                'color': '#8B0000',      # Dark red border
-                'fillcolor': '#FF6B6B',  # Bright red background
+                'color': '#7F0000',      # Dark red border
+                'fillcolor': '#F97068',  # Accessible red
                 'style': 'filled,rounded,bold',
-                'fontcolor': 'white',
+                'fontcolor': '#FFFFFF',
                 'fontsize': '10',
                 'penwidth': '2.5'        # Thicker border
             }
         elif node.module_type == ModuleType.LOCAL:
             style = {
-                'color': '#2E86AB',      # Blue border
-                'fillcolor': '#7FB3D3',  # Light blue background
+                'color': '#1E88E5',      # Blue border (CB-friendly)
+                'fillcolor': '#BBDEFB',  # Light blue background
                 'style': 'filled,rounded',
                 'fontcolor': '#000000',  # Black text
                 'fontsize': '10'
             }
         elif node.module_type == ModuleType.THIRD_PARTY:
             style = {
-                'color': '#F18F01',      # Orange border
-                'fillcolor': '#FFD93D',  # Yellow background
+                'color': '#FB8C00',      # Orange border
+                'fillcolor': '#FFE0B2',  # Light orange background
                 'style': 'filled,rounded',
                 'fontcolor': '#000000',  # Black text
                 'fontsize': '10'
             }
         else:  # STDLIB
             style = {
-                'color': '#6C757D',      # Gray border
-                'fillcolor': '#E9ECEF',  # Light gray background
+                'color': '#6D6D6D',      # Gray border
+                'fillcolor': '#EEEEEE',  # Light gray background
                 'style': 'filled,rounded',
-                'fontcolor': '#495057',  # Dark gray text
+                'fontcolor': '#333333',  # Dark gray text
                 'fontsize': '9'
             }
         
@@ -139,7 +166,7 @@ class GraphvizVisualizer(IGraphVisualizer):
         if len(display_name) > 40:
             display_name = display_name[:37] + "..."
         
-        dot.node(escaped_name, display_name, **style)
+        dot.node(escaped_name, display_name, tooltip=node.name, **style)
     
     def _add_edge(self, dot, source: str, target: str, is_in_cycle: bool = False):
         """
@@ -156,16 +183,14 @@ class GraphvizVisualizer(IGraphVisualizer):
         if is_in_cycle:
             # Highlight cycle edges with red and thicker line
             edge_attr = {
-                'color': '#FF0000',    # Red color
-                'penwidth': '3.0',     # Thicker line
-                'arrowhead': 'vee'
+                'color': '#D32F2F',    # Accessible red
+                'penwidth': '3.0'      # Thicker line
             }
         else:
             # Normal edges
             edge_attr = {
                 'color': '#708090',    # Slate gray
-                'penwidth': '1.5',
-                'arrowhead': 'vee'
+                'penwidth': '1.5'
             }
         
         dot.edge(
@@ -194,8 +219,23 @@ class GraphvizVisualizer(IGraphVisualizer):
             dot: The graphviz Digraph object.
             node_count: Number of nodes in the graph.
         """
-        # Graphviz title is added via graph_attr in render()
-        pass
+        title = f"Dependency Graph • {node_count} modules"
+        dot.attr(label=title, labelloc='t', fontsize='16', fontname='Helvetica', fontcolor='#333333')
+
+    def _add_legend(self, dot):
+        """
+        Add a legend explaining colors and cycle highlighting.
+        """
+        with dot.subgraph(name='cluster_legend') as legend:
+            legend.attr(label='Legend', color='#B0B0B0', style='rounded', fontname='Helvetica', fontsize='12')
+            # Create example nodes
+            legend.node('legend_local', 'Local', shape='box', style='filled,rounded', fillcolor='#BBDEFB', color='#1E88E5')
+            legend.node('legend_third', 'Third-party', shape='box', style='filled,rounded', fillcolor='#FFE0B2', color='#FB8C00')
+            legend.node('legend_std', 'Stdlib', shape='box', style='filled,rounded', fillcolor='#EEEEEE', color='#6D6D6D')
+            legend.node('legend_cycle', 'In Cycle', shape='box', style='filled,rounded,bold', fillcolor='#F97068', color='#7F0000', fontcolor='#FFFFFF')
+            # Arrange legend nodes
+            legend.attr(rank='same')
+            legend.edges([('legend_local', 'legend_third'), ('legend_third', 'legend_std'), ('legend_std', 'legend_cycle')])
 
 
 class HtmlVisualizer(IGraphVisualizer):
