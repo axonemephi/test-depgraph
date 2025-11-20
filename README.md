@@ -1,7 +1,12 @@
 # DepCycle
 
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python
+3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Downloads](https://static.pepy.tech/badge/depcycle)](https://pepy.tech/project/depcycle)
+[![Downloads per
+month](https://img.shields.io/pypi/dm/depcycle.svg)](https://pypi.org/project/depcycle/)
 
 **DepCycle** is a command-line tool to visualize Python project dependencies. It helps developers understand complex codebases by automatically generating visual maps of how modules are connected, making it easy to spot architectural problems like **circular dependencies** and untangle coupled code.
 
@@ -196,6 +201,10 @@ If circular dependencies are found:
   Cycle 1: app.models.user → app.services.auth → app.models.user
   Cycle 2: app.core.database → app.core.config → app.core.database
 ```
+
+## Analytics
+-   https://pepy.tech/project/depcycle
+-   https://pypistats.org/packages/depcycle
 
 ## Contributing
 
