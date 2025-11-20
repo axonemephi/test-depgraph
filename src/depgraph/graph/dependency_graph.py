@@ -2,7 +2,6 @@
 
 from pathlib import Path
 from typing import Dict, List, Set, Optional
-import sys
 
 from .module_node import ModuleNode, ModuleType
 from ..parsing.project import Project

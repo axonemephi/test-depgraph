@@ -29,7 +29,11 @@ class Project:
         if not self.root_path.is_dir():
             raise ValueError(f"Project path is not a directory: {root_path}")
     
-    def get_python_files(self, exclude_patterns: List[str] = None) -> List[Path]:
+    def get_python_files(
+        self,
+        exclude_patterns: List[str] = None,
+        include_defaults: bool = True,
+    ) -> List[Path]:
         """
         Discover all Python files in the project.
         
@@ -37,13 +41,31 @@ class Project:
         directories and files that match any of the provided patterns.
         
         Args:
-            exclude_patterns: List of glob patterns to exclude (e.g., ['venv', '*.test.py']).
-                            Patterns can match file or directory names.
+            exclude_patterns: Custom glob patterns to exclude (e.g., ['venv', '*.test.py']).
+                              Patterns can match file or directory names.
+            include_defaults: When True (default) also excludes common virtualenv,
+                              cache, and VCS directories that should never be parsed.
         
         Returns:
             List of absolute Path objects for each Python file found.
         """
         exclude_patterns = exclude_patterns or []
+        if include_defaults:
+            default_excludes = [
+                "venv",
+                ".venv",
+                "env",
+                ".env",
+                "__pycache__",
+                ".git",
+                "site-packages",
+                "node_modules",
+                "dist",
+                "build",
+                ".mypy_cache",
+                ".pytest_cache",
+            ]
+            exclude_patterns = list(dict.fromkeys(default_excludes + exclude_patterns))
         python_files = []
         
         # Get all .py files recursively
@@ -78,6 +100,10 @@ class Project:
         for pattern in patterns:
             # Check if pattern matches the file name
             if fnmatch.fnmatch(file_path.name, pattern):
+                return True
+            
+            # Check if the full relative path matches (e.g., pkg/utils.py)
+            if fnmatch.fnmatch(str(relative_path).replace('\\', '/'), pattern):
                 return True
             
             # Check if pattern matches any part of the path

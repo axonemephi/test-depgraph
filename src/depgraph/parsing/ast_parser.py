@@ -97,14 +97,20 @@ class _ImportVisitor(ast.NodeVisitor):
                 # e.g., 'from . import local'
                 module_base = dots
             else:
-                # e.g., 'from .TimeAccount import TimeAccount'
+                # e.g., 'from .pkg import submod'
                 module_base = f"{dots}{node.module}"
             
-            # For relative imports, don't add the imported name as a suffix
-            # because we need to resolve the module path first
-            # Just add the module base
             if module_base:
                 self.imports.add(module_base)
+            
+            if node.names:
+                for alias in node.names:
+                    if alias.name == '*':
+                        continue
+                    if node.module is None:
+                        self.imports.add(f"{dots}{alias.name}")
+                    else:
+                        self.imports.add(f"{module_base}.{alias.name}")
         else:
             # Absolute import
             if node.module is None:

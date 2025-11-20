@@ -5,7 +5,7 @@ DepGraph helps developers understand complex codebases by automatically
 generating visual maps of module dependencies.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 from .cli import DepGraphCLI
 from .config import Config
