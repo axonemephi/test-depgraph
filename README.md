@@ -15,9 +15,9 @@
 
 ## Links
 
-- **Repository:** https://github.com/axonemephi/depgraph
-- **Tests:** https://github.com/axonemephi/depgraph/tree/main/tests
-- **Design commentary:** https://github.com/axonemephi/depgraph/blob/main/DESIGN.md
+- **Repository:** https://github.com/Matricess/depgraph.git
+- **Tests:** https://github.com/Matricess/depgraph/tree/main/tests
+- **Design commentary:** https://github.com/Matricess/depgraph/blob/main/DESIGN.md
 - **Sample dependency graph:** `examples/` (local)
 
 ## Prerequisites
@@ -50,13 +50,13 @@ pip install depgraph
 or 
 
 # install directly from GitHub
-pip install git+https://github.com/axonemephi/depgraph.git
+pip install git+https://github.com/Matricess/depgraph.git
 ```
 
 ### Install from a clone (editable dev setup)
 
 ```bash
-git clone https://github.com/axonemephi/depgraph.git
+git clone https://github.com/Matricess/depgraph.git
 cd depgraph
 pip install -e .[dev]
 ```
