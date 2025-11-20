@@ -1,7 +1,7 @@
 import textwrap
 from pathlib import Path
 
-from depgraph.parsing.ast_parser import ASTParser
+from depcycle.parsing.ast_parser import ASTParser
 
 
 def test_ast_parser_extracts_all_import_shapes(tmp_path: Path):

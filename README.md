@@ -1,9 +1,9 @@
-# DepGraph
+# DepCycle
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**DepGraph** is a command-line tool to visualize Python project dependencies. It helps developers understand complex codebases by automatically generating visual maps of how modules are connected, making it easy to spot architectural problems like **circular dependencies** and untangle coupled code.
+**DepCycle** is a command-line tool to visualize Python project dependencies. It helps developers understand complex codebases by automatically generating visual maps of how modules are connected, making it easy to spot architectural problems like **circular dependencies** and untangle coupled code.
 
 ## Features
 
@@ -15,9 +15,9 @@
 
 ## Links
 
-- **Repository:** https://github.com/Matricess/depgraph.git
-- **Tests:** https://github.com/Matricess/depgraph/tree/main/tests
-- **Design commentary:** https://github.com/Matricess/depgraph/blob/main/DESIGN.md
+- **Repository:** https://github.com/Matricess/depcycle.git
+- **Tests:** https://github.com/Matricess/depcycle/tree/main/tests
+- **Design commentary:** https://github.com/Matricess/depcycle/blob/main/DESIGN.md
 - **Sample dependency graph:** `examples/` (local)
 
 ## Prerequisites
@@ -45,19 +45,19 @@ Download and install from [Graphviz website](https://graphviz.org/download/)
 ### Install via pip (recommended)
 
 ```bash
-pip install depgraph
+pip install depcycle
 
 or 
 
 # install directly from GitHub
-pip install git+https://github.com/Matricess/depgraph.git
+pip install git+https://github.com/Matricess/depcycle.git
 ```
 
 ### Install from a clone (editable dev setup)
 
 ```bash
-git clone https://github.com/Matricess/depgraph.git
-cd depgraph
+git clone https://github.com/Matricess/depcycle.git
+cd depcycle
 pip install -e .[dev]
 ```
 
@@ -70,17 +70,17 @@ If you prefer requirements files, `pip install -r requirements.txt` will install
 Analyze a Python project and generate a dependency graph (PNG by default):
 
 ```bash
-depgraph /path/to/your/project
+depcycle /path/to/your/project
 ```
 
 The output is written to `dependencies.png` in the current working directory.
 
-> **Note:** By default DepGraph skips common noise directories such as `venv/`, `.venv/`, `.git/`, `__pycache__/`, `node_modules/`, build artifacts, and Python cache folders. Use `-e` flags if you need extra exclusions, or disable the defaults via the API (`Project.get_python_files(include_defaults=False)`).
+> **Note:** By default DepCycle skips common noise directories such as `venv/`, `.venv/`, `.git/`, `__pycache__/`, `node_modules/`, build artifacts, and Python cache folders. Use `-e` flags if you need extra exclusions, or disable the defaults via the API (`Project.get_python_files(include_defaults=False)`).
 
 ### Using as a Module
 
 ```bash
-python -m depgraph /path/to/your/project
+python -m depcycle /path/to/your/project
 ```
 
 ### Advanced Options
@@ -88,25 +88,25 @@ python -m depgraph /path/to/your/project
 Generate a different output format or explicit location:
 
 ```bash
-depgraph /path/to/project --format svg --output diagrams/dependencies.svg
+depcycle /path/to/project --format svg --output diagrams/dependencies.svg
 ```
 
 Exclude specific directories or files (glob syntax):
 
 ```bash
-depgraph /path/to/project -e venv -e ".*/tests/*" -e "*.test.py"
+depcycle /path/to/project -e venv -e ".*/tests/*" -e "*.test.py"
 ```
 
 Focus only on local code:
 
 ```bash
-depgraph /path/to/project --no-third-party --no-stdlib
+depcycle /path/to/project --no-third-party --no-stdlib
 ```
 
 **Full help:**
 
 ```bash
-depgraph --help
+depcycle --help
 ```
 
 ## Tests
@@ -123,9 +123,9 @@ See [`tests/README.md`](tests/README.md) for a quick summary.
 ## Project Structure
 
 ```
-depgraph/
+depcycle/
 ├── src/
-│   └── depgraph/
+│   └── depcycle/
 │       ├── __init__.py
 │       ├── __main__.py
 │       ├── cli.py                  # Command-line interface
@@ -149,7 +149,7 @@ depgraph/
 
 ## Architecture
 
-DepGraph follows a clean, modular architecture:
+DepCycle follows a clean, modular architecture:
 
 1. **CLI Layer** (`cli.py`): Handles user input and orchestrates the workflow
 2. **Configuration** (`config.py`): Manages all settings and options
@@ -159,7 +159,7 @@ DepGraph follows a clean, modular architecture:
 
 ## Key Classes
 
-- **`DepGraphCLI`**: Main entry point that handles command-line arguments
+- **`DepCycleCLI`**: Main entry point that handles command-line arguments
 - **`DependencyGraph`**: Central data structure holding all module relationships
 - **`ModuleNode`**: Represents a single Python module/file
 - **`Project`**: Discovers and manages Python files in a project
@@ -178,7 +178,7 @@ DepGraph follows a clean, modular architecture:
 
 ## Example Output
 
-When you run DepGraph, you'll see output like:
+When you run DepCycle, you'll see output like:
 
 ```
 Analyzing project: /path/to/my-project

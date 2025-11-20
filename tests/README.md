@@ -1,6 +1,6 @@
 # Tests Overview
 
-This directory contains fast unit tests that exercise the critical pieces of DepGraph.
+This directory contains fast unit tests that exercise the critical pieces of DepCycle.
 
 - `test_ast_parser.py` – verifies the AST parser understands absolute, relative, and aliased imports.
 - `test_project.py` – ensures project discovery respects built-in/default exclusion patterns and that they can be disabled when needed.

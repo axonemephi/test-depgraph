@@ -1,4 +1,4 @@
-Examples for trying DepGraph quickly
+Examples for trying DepCycle quickly
 
 Contents
 - basic_project: No cycles, simple layered imports
@@ -9,12 +9,12 @@ How to run
 
 Basic (acyclic) graph, SVG:
 ```bash
-depgraph "examples/basic_project" -o basic_deps.svg --format svg
+depcycle "examples/basic_project" -o basic_deps.svg --format svg
 ```
 
 Cyclic graph, SVG (shows cycle warning):
 ```bash
-depgraph "examples/cyclic_project" -o cyclic_deps.svg --format svg
+depcycle "examples/cyclic_project" -o cyclic_deps.svg --format svg
 ```
 
 Tips

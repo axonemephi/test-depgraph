@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from depgraph.config import Config
-from depgraph.graph.dependency_graph import DependencyGraph
-from depgraph.parsing.ast_parser import ASTParser
-from depgraph.parsing.project import Project
+from depcycle.config import Config
+from depcycle.graph.dependency_graph import DependencyGraph
+from depcycle.parsing.ast_parser import ASTParser
+from depcycle.parsing.project import Project
 
 
 def write(tmp_dir: Path, rel: str, content: str):

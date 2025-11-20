@@ -1,4 +1,4 @@
-"""Configuration class for DepGraph settings."""
+"""Configuration class for DepCycle settings."""
 
 from pathlib import Path
 from typing import List, Optional
@@ -29,9 +29,9 @@ DEFAULT_EXCLUDE_PATTERNS = [
 
 class Config:
     """
-    Holds all configuration settings for a DepGraph run.
+    Holds all configuration settings for a DepCycle run.
     
-    This class encapsulates all the options that control how DepGraph
+    This class encapsulates all the options that control how DepCycle
     analyzes and visualizes a Python project.
     
     Attributes:

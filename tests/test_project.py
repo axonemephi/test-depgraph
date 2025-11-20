@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from depgraph.parsing.project import Project
+from depcycle.parsing.project import Project
 
 
 def test_project_discovers_python_files_with_default_excludes(tmp_path: Path):

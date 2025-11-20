@@ -2,18 +2,18 @@
 
 ## Scope
 
-DepGraph scans a Python project, builds a module-level dependency graph, highlights circular dependencies, and renders the graph as PNG/SVG (Graphviz) or HTML (placeholder).
+DepCycle scans a Python project, builds a module-level dependency graph, highlights circular dependencies, and renders the graph as PNG/SVG (Graphviz) or HTML (placeholder).
 
 ## Key Design Decisions
 
 ### 1. Layered Architecture
-- **CLI / Entry Points** (`depgraph.cli`) provide a façade that wires the workflow together.
+- **CLI / Entry Points** (`depcycle.cli`) provide a façade that wires the workflow together.
 - **Parsing Layer** (`parsing.project`, `parsing.ast_parser`) is responsible only for I/O and AST inspection. This keeps graph logic pure and easily testable.
 - **Graph Layer** (`graph.dependency_graph`, `graph.module_node`) stores project state and resolves imports. It accepts parser/project abstractions so it can be reused or tested in isolation.
 - **Rendering Layer** (`rendering.*`) implements a simple `IGraphVisualizer` strategy, enabling additional outputs without changing the analysis logic.
 
 ### 2. Default Exclusions as Guard Rails
-Most real projects contain embedded virtual environments, caches, or `node_modules/`. DepGraph now ignores these by default within `Project.get_python_files()` but still lets callers opt out (`include_defaults=False`). This prevents massive, noisy graphs and significantly improves runtime without relying on the user to pass every exclusion.
+Most real projects contain embedded virtual environments, caches, or `node_modules/`. DepCycle now ignores these by default within `Project.get_python_files()` but still lets callers opt out (`include_defaults=False`). This prevents massive, noisy graphs and significantly improves runtime without relying on the user to pass every exclusion.
 
 ### 3. Safe Import Extraction
 All dependency discovery happens via Python's `ast` module rather than executing imports. This reduces risk, works even when dependencies are missing, and aligns with secure tooling guidelines.

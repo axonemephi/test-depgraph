@@ -3,14 +3,14 @@ requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "depgraph"
+name = "depcycle"
 version = "0.2.0"
 description = "Command-line tool to visualize Python project dependencies."
 readme = "README.md"
 requires-python = ">=3.8"
 license = { file = "LICENSE" }
 authors = [
-  { name = "DepGraph Maintainers" }
+  { name = "DepCycle Maintainers" }
 ]
 keywords = ["dependencies", "graphviz", "architecture", "visualization", "cli"]
 classifiers = [
@@ -40,17 +40,17 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/axonemephi/depgraph"
-Repository = "https://github.com/axonemephi/depgraph"
-Issues = "https://github.com/axonemephi/depgraph/issues"
+Homepage = "https://github.com/Matricess/depcycle"
+Repository = "https://github.com/Matricess/depcycle"
+Issues = "https://github.com/Matricess/depcycle/issues"
 
 [project.scripts]
-depgraph = "depgraph.cli:DepGraphCLI.main"
+depcycle = "depcycle.cli:DepCycleCLI.main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["depgraph*"]
+include = ["depcycle*"]
 

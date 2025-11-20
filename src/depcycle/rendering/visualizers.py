@@ -13,7 +13,7 @@ class GraphvizVisualizer(IGraphVisualizer):
     """
     Visualizer using Graphviz to generate PNG/SVG images.
     
-    This is the primary visualization backend for DepGraph, using the
+    This is the primary visualization backend for DepCycle, using the
     graphviz Python library to create standard graph visualizations.
     """
     

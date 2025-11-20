@@ -1,5 +1,5 @@
 """
-this module contains the command-line interface logic for DepGraph.
+this module contains the command-line interface logic for DepCycle.
 it defines the user-facing commands, parses arguments, and orchestrates
 the dependency analysis and visualization workflow.
 """
@@ -16,7 +16,7 @@ from .rendering.interface import IGraphVisualizer
 from .rendering.visualizers import GraphvizVisualizer, HtmlVisualizer
 
 
-class DepGraphCLI:
+class DepCycleCLI:
     """
     The Conductor: Parses arguments and orchestrates the workflow.
     
@@ -27,7 +27,7 @@ class DepGraphCLI:
     @staticmethod
     def main(args: list = None):
         """
-        Main entry point for the DepGraph CLI.
+        Main entry point for the DepCycle CLI.
         
         Parses command-line arguments, creates configuration, and runs
         the dependency analysis workflow.
@@ -39,7 +39,7 @@ class DepGraphCLI:
             args = sys.argv[1:]
         
         # Parse arguments
-        parser = DepGraphCLI._create_parser()
+        parser = DepCycleCLI._create_parser()
         parsed_args = parser.parse_args(args)
         
         # Validate arguments
@@ -64,7 +64,7 @@ class DepGraphCLI:
         
         # Run the analysis
         try:
-            DepGraphCLI.run(config)
+            DepCycleCLI.run(config)
         except KeyboardInterrupt:
             print("\nInterrupted by user")
             sys.exit(1)
@@ -113,7 +113,7 @@ class DepGraphCLI:
         
         # Step 5: Render visualization
         print(f"\nGenerating {config.output_format.upper()} visualization...")
-        visualizer = DepGraphCLI._create_visualizer(config.output_format)
+        visualizer = DepCycleCLI._create_visualizer(config.output_format)
         visualizer.render(graph, config)
         
         print(f"✓ Visualization saved to: {config.output_file}")
@@ -127,7 +127,7 @@ class DepGraphCLI:
             Configured ArgumentParser instance.
         """
         parser = argparse.ArgumentParser(
-            prog='depgraph',
+            prog='depcycle',
             description='Visualize Python project dependencies',
             formatter_class=argparse.RawDescriptionHelpFormatter,
             epilog="""
@@ -210,4 +210,4 @@ Examples:
 
 # Entry point for running as a script
 if __name__ == '__main__':
-    DepGraphCLI.main()
+    DepCycleCLI.main()
